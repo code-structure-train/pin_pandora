@@ -1,0 +1,5 @@
+初始化
+progen init -p pandora -tar pandora
+
+生成工程
+progen generate -f projects.yaml -p pandora -t uvision5
