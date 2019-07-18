@@ -25,7 +25,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "entry.h"
+#include "key.h"
+#include "led.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -58,7 +60,62 @@ static void MX_GPIO_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+rt_thread_t led1_thread;
+rt_thread_t led2_thread;
+rt_thread_t led3_thread;
 
+void led1_thread_entry(void* parameter)
+{
+  while(1) {
+    HAL_GPIO_WritePin(LED_G_GPIO_Port, LED_G_Pin, GPIO_PIN_RESET);
+    rt_thread_delay(500);
+
+    HAL_GPIO_WritePin(LED_G_GPIO_Port, LED_G_Pin, GPIO_PIN_SET);
+    rt_thread_delay(500);
+  }
+}
+
+void led2_thread_entry(void* parameter)
+{
+  while(1) {
+    HAL_GPIO_WritePin(LED_G_GPIO_Port, GPIO_PIN_14, GPIO_PIN_RESET);
+    rt_thread_delay(200);
+
+    HAL_GPIO_WritePin(LED_G_GPIO_Port, GPIO_PIN_14, GPIO_PIN_SET);
+    rt_thread_delay(200);
+  }
+}
+
+void led3_thread_entry(void* parameter)
+{
+  static uint8_t count = 0;
+  static uint8_t key_last = 0;
+  while(1) {
+    if (key_last != KEY_VALUE) {
+
+      if(key_last == 1 && KEY_VALUE == 0) {
+
+        if(count >= 3)	{
+          count = 0;
+        }
+
+        if(count == 0) {
+          rt_pin_write(LED_G_PIN, !rt_pin_read(LED_G_PIN));
+        }
+        if(count == 1) {
+          rt_pin_write(LED_R_PIN, !rt_pin_read(LED_R_PIN));
+        }
+        if(count == 2) {
+          rt_pin_write(LED_B_PIN, !rt_pin_read(LED_B_PIN));
+        }
+
+        count++;
+      }
+      key_last = KEY_VALUE;
+    }
+    rt_thread_delay(1);
+  }
+}
 /* USER CODE END 0 */
 
 /**
@@ -82,7 +139,7 @@ int main(void)
   /* USER CODE END Init */
 
   /* Configure the system clock */
-  SystemClock_Config();
+//  SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
 
@@ -93,15 +150,17 @@ int main(void)
   MX_FATFS_Init();
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
-
+  key_init();
+  led_init();
+//  RTT_CREATE(led1,led1_thread_entry,RT_NULL,256,5,20);
+//  RTT_CREATE(led2,led2_thread_entry,RT_NULL,256,5,20);
+  RTT_CREATE(led3,led3_thread_entry,RT_NULL,256,5,20);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-		HAL_GPIO_TogglePin(GPIOE, LED_R_Pin|LED_G_Pin|LED_B_Pin);
-		HAL_Delay(500);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
