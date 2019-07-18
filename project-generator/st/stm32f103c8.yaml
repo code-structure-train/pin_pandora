@@ -1,0 +1,33 @@
+mcu:
+    core:
+    - cortex-m3
+    name:
+    - stm32f103c8
+    vendor:
+    - st
+tool_specific:
+    uvision5:
+        TargetOption:
+            Cpu:
+            - IRAM(0x20000000,0x5000) IROM(0x08000000,0x10000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE
+            Device:
+            - STM32F103C8
+            DeviceId:
+            - 4235
+            FlashDriverDll:
+            - UL2CM3(-S0 -C0 -P0 -FD20000000 -FC1000 -FN1 -FF0STM32F10x_128 -FS08000000 -FL020000 -FP0($$Device:STM32F103C8$Flash\STM32F10x_128.FLM))
+            PackID:
+            - Keil.STM32F1xx_DFP.2.2.0
+            RegisterFile:
+            - $$Device:STM32F103C8$Device\Include\stm32f10x.h
+            SFDFile:
+            - $$Device:STM32F103C8$SVD\STM32F103xx.svd
+            Vendor:
+            - STMicroelectronics
+    iar:
+        OGChipSelectEditMenu:
+            state:
+            - STM32F103C8 ST STM32F103C8
+        OGCoreOrChip:
+            state:
+            - 1

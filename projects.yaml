@@ -1,0 +1,6 @@
+projects:
+  pandora:
+  - project_cubemx.yaml
+settings:
+  export_dir:
+  - generate_project
